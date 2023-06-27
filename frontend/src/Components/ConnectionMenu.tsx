@@ -1,6 +1,6 @@
-import { Fragment, FC } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { Connection } from './Connection';
+import { Fragment, FC, useRef } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import { Connection } from "./Connection";
 
 interface ConnectionMenuProps {
   connection: Connection;
@@ -9,14 +9,25 @@ interface ConnectionMenuProps {
 }
 
 const ConnectionMenu: FC<ConnectionMenuProps> = ({ connection, onRemove, onEdit }) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
   function classNames(...classes: (string | undefined)[]) {
     return classes.filter(Boolean).join(' ');
   }
 
+  const handleButtonClick = () => {
+    if (menuRef.current) {
+      menuRef.current.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    }
+  };
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+        <Menu.Button
+          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+          onClick={handleButtonClick}
+        >
           {connection.host}:{connection.port}
         </Menu.Button>
       </div>
@@ -29,7 +40,10 @@ const ConnectionMenu: FC<ConnectionMenuProps> = ({ connection, onRemove, onEdit 
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items
+          className="absolute z-50 w-56 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          ref={menuRef}
+        >
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (

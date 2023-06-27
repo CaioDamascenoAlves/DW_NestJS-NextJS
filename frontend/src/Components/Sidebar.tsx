@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { AiOutlineMenu } from 'react-icons/ai';
-import { MdClose } from 'react-icons/md';
-import ConnectionForm from './ConnectionForm';
-import ConnectionMenu from './ConnectionMenu';
-import { Connection } from './Connection';
+import React, { useState } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
+import { MdClose } from "react-icons/md";
+import { Resizable } from "react-resizable";
+import ConnectionForm from "./ConnectionForm";
+import ConnectionMenu from "./ConnectionMenu";
+import { Connection } from "./Connection";
+import ResizableDiv from "./Resizable";
 
 interface SidebarProps {
   // Defina as props da Sidebar, se necessário
@@ -11,21 +13,35 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [editingConnection, setEditingConnection] = useState<Connection | null>(null);
+  const [editingConnection, setEditingConnection] = useState<Connection | null>(
+    null
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [height, setHeight] = useState(60);
 
   const handleNewConnection = (newConnection: Connection) => {
-    setConnections(oldConnections => [...oldConnections, newConnection]);
+    if (editingConnection) {
+      setConnections((oldConnections) =>
+        oldConnections.map((connection) =>
+          connection.id === newConnection.id ? newConnection : connection
+        )
+      );
+    } else {
+      setConnections((oldConnections) => [...oldConnections, newConnection]);
+    }
+    setEditingConnection(null);
     setIsFormOpen(false);
   };
 
   const handleRemoveConnection = (id: string) => {
-    setConnections(oldConnections => oldConnections.filter(connection => connection.id !== id));
+    setConnections((oldConnections) =>
+      oldConnections.filter((connection) => connection.id !== id)
+    );
   };
 
   const handleEditConnection = (id: string) => {
-    const connection = connections.find(connection => connection.id === id);
+    const connection = connections.find((connection) => connection.id === id);
     if (connection) {
       setEditingConnection(connection);
       setIsFormOpen(true);
@@ -52,19 +68,28 @@ const Sidebar: React.FC<SidebarProps> = () => {
           </div>
           <nav>
             <ul>
-              <li onClick={toggleForm}>Nova Conexão</li>
-              <li>Item 2</li>
-              <li>Item 3</li>
+              <li onClick={toggleForm}>+Nova Conexão</li>
             </ul>
           </nav>
-          {connections.map(connection => (
-            <ConnectionMenu
-              key={connection.id}
-              connection={connection}
-              onEdit={handleEditConnection}
-              onRemove={handleRemoveConnection}
-            />
-          ))}
+          <Resizable
+            width={200}
+            height={height}
+            onResizeStop={(_e, { size }) => {
+              setHeight(size.height);
+            }}
+            resizeHandles={["s"]}
+          >
+            <ResizableDiv>
+              {connections.map((connection) => (
+                <ConnectionMenu
+                  key={connection.id}
+                  connection={connection}
+                  onEdit={handleEditConnection}
+                  onRemove={handleRemoveConnection}
+                />
+              ))}
+            </ResizableDiv>
+          </Resizable>
         </div>
       )}
       <div className="w-full bg-gray-100">
@@ -93,4 +118,4 @@ const Sidebar: React.FC<SidebarProps> = () => {
   );
 };
 
-export default Sidebar
+export default Sidebar;

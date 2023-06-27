@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Connection } from './Connection';
+import { v4 as uuidv4 } from 'uuid';
 
 interface FormData {
   sgbds: string;
@@ -23,7 +24,7 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({ onClose, onSubmit, edit
 
   const submitForm = (data: FormData) => {
     const newConnection: Connection = {
-      id: editingConnection ? editingConnection.id : '',
+      id: editingConnection ? editingConnection.id : uuidv4(),
       ...data,
       port: parseInt(data.port, 10),
     };
