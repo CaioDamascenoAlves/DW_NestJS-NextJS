@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <div className="flex h-screen">
       {isSidebarOpen && (
-        <div className="bg-blue-500 text-white w-64 space-y-6 py-7 px-2 fixed left-0 top-0 bottom-0">
+        <div className="bg-gray-500 text-white w-64 space-y-6 py-7 px-2 fixed left-0 top-0 bottom-0">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-semibold">DW TOOL</span>
             <button className="text-white" onClick={toggleSidebar}>
@@ -81,19 +81,20 @@ const Sidebar: React.FC<SidebarProps> = () => {
           >
             <ResizableDiv>
               {connections.map((connection) => (
-                <ConnectionMenu
-                  key={connection.id}
-                  connection={connection}
-                  onEdit={handleEditConnection}
-                  onRemove={handleRemoveConnection}
-                />
+                <div key={connection.id} className="mb-4">
+                  <ConnectionMenu
+                    connection={connection}
+                    onEdit={handleEditConnection}
+                    onRemove={handleRemoveConnection}
+                  />
+                </div>
               ))}
             </ResizableDiv>
           </Resizable>
         </div>
       )}
       <div className="w-full bg-gray-100">
-        <header className="flex items-center justify-between p-4 bg-blue-500 text-white">
+        <header className="flex items-center justify-between p-4 bg-gray-400 text-white">
           <button onClick={toggleSidebar}>
             <AiOutlineMenu size={24} />
           </button>
