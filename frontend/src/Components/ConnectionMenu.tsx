@@ -4,6 +4,7 @@ import { Connection } from "./Connection";
 import { useSmallViewport } from './useSmallViewport'
 import { MenuButton } from './MenuButton';
 import { MenuItem } from './MenuItem';
+import { ButtonWithArrow } from "./ButtonWithArrow";
 
 interface ConnectionMenuProps {
   connection: Connection;
@@ -30,7 +31,9 @@ const ConnectionMenu: FC<ConnectionMenuProps> = ({
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div className="connection-menu">
-        <MenuButton connection={connection} isSmallViewport={isSmallViewport} onButtonClick={handleButtonClick} />
+        <Menu.Button>
+          <ButtonWithArrow connection={connection} isSmallViewport={isSmallViewport} onClick={handleButtonClick} />
+        </Menu.Button>
       </div>
       <Transition
         as={Fragment}
@@ -59,5 +62,7 @@ const ConnectionMenu: FC<ConnectionMenuProps> = ({
   );
 };
 
+
 export default ConnectionMenu;
+
 
