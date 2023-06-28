@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { AiOutlineMenu } from "react-icons/ai";
-import { MdClose } from "react-icons/md";
-import { Resizable } from "react-resizable";
-import ConnectionForm from "./ConnectionForm";
-import ConnectionMenu from "./ConnectionMenu";
-import { Connection } from "./Connection";
-import ResizableDiv from "./Resizable";
+import React, { useState } from 'react';
+import { AiOutlineMenu } from 'react-icons/ai';
+import { MdClose } from 'react-icons/md';
+import { Resizable } from 'react-resizable';
+import ConnectionForm from './ConnectionForm';
+import ConnectionMenu from './ConnectionMenu';
+import { Connection } from './Connection';
+import ResizableDiv from './Resizable';
+import TableList from './TableList';
 
 interface SidebarProps {
   // Defina as props da Sidebar, se necessário
@@ -13,9 +14,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [editingConnection, setEditingConnection] = useState<Connection | null>(
-    null
-  );
+  const [editingConnection, setEditingConnection] = useState<Connection | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [height, setHeight] = useState(60);
@@ -35,9 +34,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
   };
 
   const handleRemoveConnection = (id: string) => {
-    setConnections((oldConnections) =>
-      oldConnections.filter((connection) => connection.id !== id)
-    );
+    setConnections((oldConnections) => oldConnections.filter((connection) => connection.id !== id));
   };
 
   const handleEditConnection = (id: string) => {
@@ -59,38 +56,49 @@ const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <div className="flex h-screen">
       {isSidebarOpen && (
-        <div className="bg-gray-500 text-white w-64 space-y-6 py-7 px-2 fixed left-0 top-0 bottom-0">
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-semibold">DW TOOL</span>
-            <button className="text-white" onClick={toggleSidebar}>
-              <MdClose size={24} />
-            </button>
+        <div className="bg-gray-500 text-white w-64 space-y-6 py-7 px-2 fixed left-0 top-0 bottom-0 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-semibold">DW TOOL</span>
+              <button className="text-white" onClick={toggleSidebar}>
+                <MdClose size={24} />
+              </button>
+            </div>
+            <nav>
+              <ul>
+              <button className="text-white border-2 border-green-400 rounded py-2 px-4" onClick={toggleForm}>
+                    + Nova Conexão
+                  </button>
+              </ul>
+            </nav>
+            <Resizable
+              width={200}
+              height={height}
+              onResizeStop={(_e, { size }) => {
+                setHeight(size.height);
+              }}
+              resizeHandles={['s']}
+            >
+              <ResizableDiv>
+                <h2 className="text-lg font-semibold mb-2">Conexões</h2>
+                {connections.map((connection) => (
+                  <div key={connection.id} className="mb-4">
+                    <ConnectionMenu
+                      connection={connection}
+                      onEdit={handleEditConnection}
+                      onRemove={handleRemoveConnection}
+                    />
+                  </div>
+                ))}
+              </ResizableDiv>
+            </Resizable>
+            {connections.map((connection) => (
+              <TableList key={connection.id} connection={connection} />
+            ))}
           </div>
-          <nav>
-            <ul>
-              <li onClick={toggleForm}>+Nova Conexão</li>
-            </ul>
-          </nav>
-          <Resizable
-            width={200}
-            height={height}
-            onResizeStop={(_e, { size }) => {
-              setHeight(size.height);
-            }}
-            resizeHandles={["s"]}
-          >
-            <ResizableDiv>
-              {connections.map((connection) => (
-                <div key={connection.id} className="mb-4">
-                  <ConnectionMenu
-                    connection={connection}
-                    onEdit={handleEditConnection}
-                    onRemove={handleRemoveConnection}
-                  />
-                </div>
-              ))}
-            </ResizableDiv>
-          </Resizable>
+          <button className="text-white border-2 border-white rounded mt-4 py-2 px-4" >
+            Logout
+          </button>
         </div>
       )}
       <div className="w-full bg-gray-100">
